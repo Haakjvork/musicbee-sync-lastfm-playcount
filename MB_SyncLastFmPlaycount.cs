@@ -137,6 +137,12 @@ namespace MusicBeePlugin
 
         public async void SyncPlaycountFromLastFm(object sender, EventArgs args)
         {
+            if ( String.IsNullOrEmpty(config.settings.Username) )
+            {
+                mbApiInterface.MB_SetBackgroundTaskMessage(String.Concat("Can't sync with LastFm: Empty username"));
+                return;
+            }
+            
             mbApiInterface.Library_QueryFilesEx("domain=SelectedFiles", out string[] files);
             if (files == null) return;
 
