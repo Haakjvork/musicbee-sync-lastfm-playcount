@@ -15,7 +15,7 @@ namespace MusicBeePlugin
         public string AlbumName { get; private set; }
         public string AlbumArtist { get; private set; }
         public string Artist { get; private set; }
-        public string PlayCount { get; private set; }
+        public int PlayCount { get; private set; }
 
         public MBSong(string sourceFileUrl)
         {
@@ -25,7 +25,8 @@ namespace MusicBeePlugin
             AlbumName = mbApiInterface.Library_GetFileTag(sourceFileUrl, MetaDataType.Album);
             AlbumArtist = mbApiInterface.Library_GetFileTag(sourceFileUrl, MetaDataType.AlbumArtist);
             Artist = mbApiInterface.Library_GetFileTag(sourceFileUrl, MetaDataType.Artists);
-            PlayCount = mbApiInterface.Library_GetFileTag(sourceFileUrl, (MetaDataType)FilePropertyType.PlayCount);
+            var pc = mbApiInterface.Library_GetFileTag(sourceFileUrl, (MetaDataType)FilePropertyType.PlayCount);
+            PlayCount = Int32.Parse(pc);
         }
     }
 }

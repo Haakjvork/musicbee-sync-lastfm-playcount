@@ -35,7 +35,7 @@ namespace MusicBeePlugin
             about.Type = PluginType.General;
             about.VersionMajor = 1;  // your plugin version
             about.VersionMinor = 0;
-            about.Revision = 2;
+            about.Revision = 3;
             about.MinInterfaceVersion = MinInterfaceVersion;
             about.MinApiRevision = MinApiRevision;
             about.ReceiveNotifications = (ReceiveNotificationFlags.StartupOnly);
@@ -148,20 +148,25 @@ namespace MusicBeePlugin
 
             try
             {
+                int updated = 0;
                 List<MBSong> songs = files.Select(f => new MBSong(f)).ToList();
+                config.Log(String.Concat("Querying ", songs.Count, " songs"));
                 for (int i = 0; i < songs.Count; i++)
                 {
                     MBSong song = songs[i];
                     mbApiInterface.MB_SetBackgroundTaskMessage(String.Concat(i + 1, " of ", songs.Count, ": ", song.Artist, " - ", song.Name));
                     int playcount = await QueryTrackPlaycount(song);
-                    if (playcount > 1)
+                    if (playcount > 1 && song.PlayCount != playcount )
                     {
                         mbApiInterface.Library_SetFileTag(song.File, (MetaDataType)FilePropertyType.PlayCount, playcount.ToString());
                         mbApiInterface.Library_CommitTagsToFile(song.File);
+                        updated++;
                     }
 
                 }
-                mbApiInterface.MB_SetBackgroundTaskMessage(String.Concat("Finished syncing ", songs.Count, " songs"));
+                var msg = String.Concat("Updated ", updated, " of  ", songs.Count, " songs");
+                config.Log(msg);
+                mbApiInterface.MB_SetBackgroundTaskMessage(msg);
             }
             catch (Exception e)
             {
@@ -182,12 +187,12 @@ namespace MusicBeePlugin
             if ( res.Status == IF.Lastfm.Core.Api.Enums.LastResponseStatus.Successful )
             {
                 var pc = (int)res.Content.UserPlayCount;
-                config.Log(String.Concat("TrackInfo ", artist, " - ", name, " = ", pc));
+                config.Log(String.Concat("TrackInfo ", artist, " - ", name, " | OK = ", pc));
                 return pc;
             }
             else
             {
-                config.Log(String.Concat("TrackInfo ERROR ", artist, " - ", name, " = ", res.Status ));
+                config.Log(String.Concat("TrackInfo ", artist, " - ", name, " | ERROR: ", res.Status ));
                 return 0;
             }
             
@@ -195,10 +200,21 @@ namespace MusicBeePlugin
 
         private async Task<int> QueryTrackPlaycount(MBSong song)
         {
+            if ( String.IsNullOrEmpty(song.Name) || String.IsNullOrEmpty(song.Artist))
+            {
+                return 0;
+            }
             List<string> names = new List<string>();
             List<string> artists = new List<string>();
             names.Add(song.Name);
             artists.Add(song.Artist);
+            if ( song.Artist.Contains(";"))
+            {
+                string[] splitted = song.Artist.Split(';');
+                foreach (string s in splitted) {
+                    artists.Add(s);
+                }
+            }
             var normalized = song.Name.Normalize();
             if (!String.Equals(song.Name, normalized))
             {
@@ -213,12 +229,16 @@ namespace MusicBeePlugin
                     names.Add(normalizedSortTitle);
                 }
             }
-            if (config.settings.QueryAlbumArtist && !String.IsNullOrEmpty(song.AlbumArtist) && !String.Equals(song.Artist.ToLower(), song.AlbumArtist.ToLower()))
+            if (config.settings.QueryAlbumArtist && !String.IsNullOrEmpty(song.AlbumArtist) )
             {
-                artists.Add(song.AlbumArtist);
+                bool alreadyContained = artists.Select((a) => a.ToLower()).Contains(song.AlbumArtist.ToLower());
+                if ( ! alreadyContained)
+                {
+                    artists.Add(song.AlbumArtist);
+                }
             }
             //Queries
-            int old = Int32.Parse(song.PlayCount);
+            int old = song.PlayCount;
             var neu = 0;
             foreach (string name in names)
             {
