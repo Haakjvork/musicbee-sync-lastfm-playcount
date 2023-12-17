@@ -8,9 +8,11 @@ It automatically normalizes song titles and splits multiple artists, so it may m
 
 **Last.fm username**: The Last.Fm username. **Requiered** to do the query.
 
-**Query Album Artist too when different from Track Artist.** Optional. It will repeat all queries with the field AlbumArtist if it's different from Artist.
+**Query Album Artist too when different from Track Artist.** When checked, the AlbumArtist will be queried too if it's different from Artist.
 
-**Query Sort Title too when different from Track Name.** Optional. It will repeat all queries with the field SortTitle if it's different from SongTitle.
+**Query Sort Title too when different from Track Name.** When checked, the SortTitle will be queried too if it's different from SongTitle.
+
+**Query splittable artists**. When checked, if multiple artists are present, each of them will be queried.
 
 
 ## Example about normalization
