@@ -3,6 +3,7 @@ using System.IO;
 using Newtonsoft.Json;
 using System.Runtime;
 using static MusicBeePlugin.Plugin;
+using System.Linq;
 
 namespace MusicBeePlugin
 {
@@ -54,6 +55,35 @@ namespace MusicBeePlugin
                 return new Settings();
             }
         }
+        public void ControlLogFile()
+        {
+            //If the log file is too big, remove the first half of its lines
+            string dataPath = mbApiInterface.Setting_GetPersistentStoragePath();
+            string logFile = String.Concat(dataPath, SUBFOLDER, "log.log");
+            //If file bigger than 5 MB
+            if (File.Exists(logFile) ) {
+                {
+                    var fi = new FileInfo(logFile);
+                    if (fi.Length > 5 * 1024 * 1024)
+                    {
+                        var tempFile = Path.GetTempFileName();
+                        var allLines = File.ReadLines(logFile).ToList();
+                        var line = 0;
+                        var linesToKeep = File.ReadLines(logFile).ToList().Where(l =>
+                        {
+                            line++;
+                            return line > allLines.Count / 2;
+                        }).ToArray();
+
+                        File.WriteAllLines(tempFile, linesToKeep);
+
+                        File.Delete(logFile);
+                        File.Move(tempFile, logFile);
+
+                    }
+                }
+            }
+        }
 
     }
     public class Settings
@@ -61,6 +91,7 @@ namespace MusicBeePlugin
         public string Username { get; set; }
         public bool QueryAlbumArtist { get; set; } = true;
         public bool QuerySortTitle { get; set; } = true;
+        public bool QueryMultipleArtists { get; set; } = true;
 
     }
 

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using IF.Lastfm.Core.Api;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace MusicBeePlugin
 {
@@ -22,6 +23,7 @@ namespace MusicBeePlugin
         private TextBox usernameTB;
         private CheckBox queryAlbumArtistCB;
         private CheckBox querySortTitleCB;
+        private CheckBox queryMultipleArtistsCB;
 
         public PluginInfo Initialise(IntPtr apiInterfacePtr)
         {
@@ -35,7 +37,7 @@ namespace MusicBeePlugin
             about.Type = PluginType.General;
             about.VersionMajor = 1;  // your plugin version
             about.VersionMinor = 0;
-            about.Revision = 3;
+            about.Revision = 5;
             about.MinInterfaceVersion = MinInterfaceVersion;
             about.MinApiRevision = MinApiRevision;
             about.ReceiveNotifications = (ReceiveNotificationFlags.StartupOnly);
@@ -57,42 +59,67 @@ namespace MusicBeePlugin
             {
                 Panel configPanel = (Panel)Panel.FromHandle(panelHandle);
                 List<Control> controls = new List<Control>();
-                usernameTB = new TextBox()
-                {
-                    Text = config.settings.Username
-                };
-                PositionLabelControl(controls, "Last.fm username", usernameTB, 0);
-                queryAlbumArtistCB = new CheckBox()
-                {
-                    Checked = config.settings.QueryAlbumArtist
-                };
-                PositionLabelControl(controls, "Query Album Artist too when different from Track Artist", queryAlbumArtistCB, 1);
-                querySortTitleCB = new CheckBox()
-                {
-                    Checked = config.settings.QuerySortTitle
-                };
-                PositionLabelControl(controls, "Query Sort Title too when different from Track Name", querySortTitleCB, 2);
+                usernameTB = CreateTextBox(controls, "Last.fm username", "Last.fm username", config.settings.Username, 0);
+                queryAlbumArtistCB = CreateCheckbox(controls, "Query Album Artist", "Query Album Artist too when different from Track Artist", 
+                    config.settings.QueryAlbumArtist, 1, 0);
+                querySortTitleCB = CreateCheckbox(controls, "Query Sort Title", "Query Sort Title too when different from Track Name",
+                    config.settings.QuerySortTitle, 1, 1);
+                queryMultipleArtistsCB = CreateCheckbox(controls, "Query splittable artists", "Query multiple artists when present",
+                    config.settings.QueryMultipleArtists, 1, 2);
                 configPanel.Controls.AddRange(controls.ToArray());
             }
             return false;
         }
 
-        private void PositionLabelControl(List<Control> controls, string label, Control control, int row)
+        private TextBox CreateTextBox(List<Control> controls, string label, string caption, string value, int row)
         {
+            TextBox control = new TextBox()
+            {
+                Text = value
+            };
             Label prompt = new Label();
             prompt.Text = label;
-            int y = row * 20 + row*2; //Padding: 2
+            int y = row * 20 + row * 2;
             prompt.AutoSize = true;
-            prompt.Location = new Point(0, y+2 );
+            prompt.Location = new Point(0, y + 2);
+            ToolTip tooltip = new ToolTip();
+
+            int offset = (20 - control.Height) / 2;
+            control.Bounds = new Rectangle(300, y + offset, 150, control.Height);
+            AddControlAndToolip(controls, prompt, caption, control);
+            return control;
+        }
+
+        private CheckBox CreateCheckbox(List<Control> controls, string label, string caption, bool value, int row, int col)
+        {
+            CheckBox control = new CheckBox()
+            {
+                Checked = value
+            };
+            Label prompt = new Label();
+            prompt.Text = label;
+            int x = col * 150;
+            int y = row * 20 + row*2;
+            prompt.AutoSize = true;
+            prompt.Location = new Point(x+20, y+2 );
+            
             int offset = (20 - control.Height)/2;
-            control.Bounds = new Rectangle(350, y+offset, 100, control.Height);
+            control.Bounds = new Rectangle(x, y+offset, 18, control.Height);
+            AddControlAndToolip(controls, prompt, caption, control);
+            return control;
+        }
+        private void AddControlAndToolip(List<Control> controls, Label prompt, string caption, Control control)
+        {
+            ToolTip tooltip = new ToolTip();
+            tooltip.SetToolTip(control, caption);
+            tooltip.SetToolTip(prompt, caption);
             controls.Add(prompt);
             controls.Add(control);
         }
 
-        // called by MusicBee when the user clicks Apply or Save in the MusicBee Preferences screen.
-        // its up to you to figure out whether anything has changed and needs updating
-        public void SaveSettings()
+            // called by MusicBee when the user clicks Apply or Save in the MusicBee Preferences screen.
+            // its up to you to figure out whether anything has changed and needs updating
+            public void SaveSettings()
         {
             try
             {
@@ -100,6 +127,7 @@ namespace MusicBeePlugin
                 config.settings.Username = usernameTB.Text;
                 config.settings.QueryAlbumArtist = queryAlbumArtistCB.Checked;
                 config.settings.QuerySortTitle = querySortTitleCB.Checked;
+                config.settings.QueryMultipleArtists = queryMultipleArtistsCB.Checked;
 
                 config.Save();
             }
@@ -148,6 +176,7 @@ namespace MusicBeePlugin
 
             try
             {
+                config.ControlLogFile();
                 int updated = 0;
                 List<MBSong> songs = files.Select(f => new MBSong(f)).ToList();
                 config.Log(String.Concat("Querying ", songs.Count, " songs"));
@@ -208,11 +237,16 @@ namespace MusicBeePlugin
             List<string> artists = new List<string>();
             names.Add(song.Name);
             artists.Add(song.Artist);
-            if ( song.Artist.Contains(";"))
+            if ( config.settings.QueryMultipleArtists && song.Artist.Contains(";"))
             {
                 string[] splitted = song.Artist.Split(';');
                 foreach (string s in splitted) {
-                    artists.Add(s);
+                    var trimmed = s.Trim();
+                    if ( !String.IsNullOrEmpty(trimmed))
+                    {
+                        artists.Add(trimmed);
+                    }
+                    
                 }
             }
             var normalized = song.Name.Normalize();
