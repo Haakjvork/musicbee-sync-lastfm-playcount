@@ -16,10 +16,14 @@ It automatically normalizes song titles and splits multiple artists, so it may m
 ## Example about normalization
 
 If we have a song like this:
-SongTitle = Soy una fracasada estúpida (Feat. Mujeres)
-SortTitle = Soy una fracasada estúpida
-Artist = Aiko El Grupo;Mujeres
-AlbumArtist = Aiko El Grupo
+
+SongTitle = "Soy una fracasada estúpida (Feat. Mujeres)"
+
+SortTitle = "Soy una fracasada estúpida"
+
+Artist = "Aiko El Grupo;Mujeres"
+
+AlbumArtist = "Aiko El Grupo"
 
 It will query track.getInfo several times. Becuase the accent (ú) is different from the original spanish accent (ú) and because the artist is splitted with a ;, it will do the following 6 queries instead of just 1:
 
