@@ -37,7 +37,7 @@ namespace MusicBeePlugin
             about.Type = PluginType.General;
             about.VersionMajor = 1;  // your plugin version
             about.VersionMinor = 0;
-            about.Revision = 5;
+            about.Revision = 6;
             about.MinInterfaceVersion = MinInterfaceVersion;
             about.MinApiRevision = MinApiRevision;
             about.ReceiveNotifications = (ReceiveNotificationFlags.StartupOnly);
@@ -60,11 +60,11 @@ namespace MusicBeePlugin
                 Panel configPanel = (Panel)Panel.FromHandle(panelHandle);
                 List<Control> controls = new List<Control>();
                 usernameTB = CreateTextBox(controls, "Last.fm username", "Last.fm username", config.settings.Username, 0);
-                queryAlbumArtistCB = CreateCheckbox(controls, "Query Album Artist", "Query Album Artist too when different from Track Artist", 
+                queryAlbumArtistCB = CreateCheckbox(controls, "Query Album Artist too", "Query Album Artist too when different from Track Artist", 
                     config.settings.QueryAlbumArtist, 1, 0);
-                querySortTitleCB = CreateCheckbox(controls, "Query Sort Title", "Query Sort Title too when different from Track Name",
+                querySortTitleCB = CreateCheckbox(controls, "Query Sort Title too", "Query Sort Title too when different from Track Name",
                     config.settings.QuerySortTitle, 1, 1);
-                queryMultipleArtistsCB = CreateCheckbox(controls, "Query splittable artists", "Query multiple artists when present",
+                queryMultipleArtistsCB = CreateCheckbox(controls, "Query multiple artists", "Query every artist when multiple values of Artist are present",
                     config.settings.QueryMultipleArtists, 1, 2);
                 configPanel.Controls.AddRange(controls.ToArray());
             }
@@ -101,10 +101,10 @@ namespace MusicBeePlugin
             int x = col * 150;
             int y = row * 20 + row*2;
             prompt.AutoSize = true;
-            prompt.Location = new Point(x+20, y+2 );
+            prompt.Location = new Point(x+16, y+2 );
             
             int offset = (20 - control.Height)/2;
-            control.Bounds = new Rectangle(x, y+offset, 18, control.Height);
+            control.Bounds = new Rectangle(x, y+offset, 16, control.Height);
             AddControlAndToolip(controls, prompt, caption, control);
             return control;
         }
