@@ -8,11 +8,11 @@ It automatically normalizes song titles and splits multiple artists, so it may m
 
 **Last.fm username**: The Last.Fm username. **Requiered** to do the query.
 
-**Query Album Artist too when different from Track Artist.** When checked, the AlbumArtist will be queried too if it's different from Artist.
+**Query Album Artist too.** When checked, the AlbumArtist will be queried too if it's different from Artist.
 
-**Query Sort Title too when different from Track Name.** When checked, the SortTitle will be queried too if it's different from SongTitle.
+**Query Sort Title too.** When checked, the SortTitle will be queried too if it's different from SongTitle.
 
-**Query splittable artists**. When checked, if multiple artists are present, each of them will be queried.
+**Query multiple artists**. When checked, if multiple values of 'Artist' are present, each of them will be queried.
 
 
 ## Example about normalization
@@ -27,7 +27,7 @@ Artist = "Aiko El Grupo;Mujeres"
 
 AlbumArtist = "Aiko El Grupo"
 
-It will query track.getInfo several times. Becuase the accent (ú) is different from the original spanish accent (ú) and because the artist is splitted with a ;, it will do the following 6 queries instead of just 1:
+It will query track.getInfo several times. If "query multiple artist" is checked, it will split the Artist by ';'. Also, becuase the accent (ú) is different from the original spanish accent (ú) it will query the Song name twice: unchanged and normalized (Changing the accent). So, initially, we would have 6 queries for this track instead of just 1:
 
 1. Song: "Soy una fracasada estúpida (Feat. Mujeres)" Artist: "Aiko El Grupo;Mujeres"
 2. Song: "Soy una fracasada estúpida (Feat. Mujeres)" Artist: "Aiko El Grupo"
@@ -38,7 +38,7 @@ It will query track.getInfo several times. Becuase the accent (ú) is different
 
 If you also have enabled "Query Album Artist too when different from Track Artist", it would make another 2 queries using AlbumArtist, but as "Aiko El Grupo" was already queried, it won't happen in this example.
 
-Also, if you have enabled "Query Sort Title too when different from Track Name", it will make 6 mores queries in this case, using SortTitle instead of SongTitle:
+Also, if you have enabled "Query Sort Title too when different from Track Name", it will make 3 mores queries in this case, using SortTitle instead of SongTitle. If the accent is still different, it will make 3 more:
 
 7. Song: "Soy una fracasada estúpida" Artist: "Aiko El Grupo;Mujeres"
 8. Song: "Soy una fracasada estúpida" Artist: "Aiko El Grupo"
