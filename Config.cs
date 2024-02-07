@@ -18,29 +18,35 @@ namespace MusicBeePlugin
             settings = LoadSettings();
         }
 
+        public string getSubfolderPath()
+        {
+            string dataPath = mbApiInterface.Setting_GetPersistentStoragePath();
+            return String.Concat(dataPath, SUBFOLDER);
+        }
+
         public void Log(string text)
         {
             // Log the timestamp, the failed scrobble and the error message in the error file.
             string errorTimestamp = DateTime.Now.ToString();
             // Create the folder where the error log will be stored.
-            string dataPath = mbApiInterface.Setting_GetPersistentStoragePath();
-            Directory.CreateDirectory(String.Concat(dataPath, SUBFOLDER));
-            File.AppendAllText(String.Concat(dataPath, SUBFOLDER, "log.log"), errorTimestamp + " "
+            string path = getSubfolderPath();
+            Directory.CreateDirectory(path);
+            File.AppendAllText(String.Concat(path, "log.log"), errorTimestamp + " "
                                                                                         + text + Environment.NewLine);
         }
 
         public void Save()
         {
             var json = JsonConvert.SerializeObject(settings);
-            string dataPath = mbApiInterface.Setting_GetPersistentStoragePath();
-            Directory.CreateDirectory(String.Concat(dataPath, SUBFOLDER));
-            File.WriteAllText(String.Concat(dataPath, SUBFOLDER, "settings.json"), json);
+            string path = getSubfolderPath();
+            Directory.CreateDirectory(path);
+            File.WriteAllText(String.Concat(path, "settings.json"), json);
         }
         private Settings LoadSettings()
         {
-            string dataPath = mbApiInterface.Setting_GetPersistentStoragePath();
-            Directory.CreateDirectory(String.Concat(dataPath, SUBFOLDER));
-            string file = String.Concat(dataPath, SUBFOLDER, "settings.json");
+            string path = getSubfolderPath();
+            Directory.CreateDirectory(path);
+            string file = String.Concat(path, "settings.json");
             if (File.Exists(file))
             {
                 string json = File.ReadAllText(file);
@@ -58,8 +64,8 @@ namespace MusicBeePlugin
         public void ControlLogFile()
         {
             //If the log file is too big, remove the first half of its lines
-            string dataPath = mbApiInterface.Setting_GetPersistentStoragePath();
-            string logFile = String.Concat(dataPath, SUBFOLDER, "log.log");
+            string path = getSubfolderPath();
+            string logFile = String.Concat(path, "log.log");
             //If file bigger than 5 MB
             if (File.Exists(logFile) ) {
                 {

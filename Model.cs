@@ -1,7 +1,4 @@
 ﻿using System;
-using System.IO;
-using Newtonsoft.Json;
-using System.Runtime;
 using static MusicBeePlugin.Plugin;
 
 namespace MusicBeePlugin
