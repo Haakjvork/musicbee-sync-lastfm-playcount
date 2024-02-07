@@ -29,6 +29,7 @@ namespace MusicBeePlugin
             queryAlbumArtistCB.Checked = config.settings.QueryAlbumArtist;
             querySortTitleCB.Checked = config.settings.QuerySortTitle;
             queryMultipleArtistsCB.Checked = config.settings.QueryMultipleArtists;
+            syncLovedTracksCB.Checked  = config.settings.SyncLovedTracks;
             this.labelVersionInfo.Text = "v" + about.VersionMajor + "." + about.VersionMinor + "." + about.Revision;
         }
 
@@ -43,6 +44,7 @@ namespace MusicBeePlugin
                 config.settings.QueryAlbumArtist = queryAlbumArtistCB.Checked;
                 config.settings.QuerySortTitle = querySortTitleCB.Checked;
                 config.settings.QueryMultipleArtists = queryMultipleArtistsCB.Checked;
+                config.settings.SyncLovedTracks = syncLovedTracksCB.Checked;
 
                 config.Save();
             }

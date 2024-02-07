@@ -39,6 +39,7 @@
             this.buttonCancel = new System.Windows.Forms.Button();
             this.labelVersionInfo = new System.Windows.Forms.Label();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.syncLovedTracksCB = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -58,6 +59,7 @@
             this.panel1.Controls.Add(this.labelVersionInfo);
             this.panel1.Controls.Add(this.buttonOpenSettingsFolder);
             this.panel1.Controls.Add(this.label1);
+            this.panel1.Controls.Add(this.syncLovedTracksCB);
             this.panel1.Controls.Add(this.queryMultipleArtistsCB);
             this.panel1.Controls.Add(this.querySortTitleCB);
             this.panel1.Controls.Add(this.queryAlbumArtistCB);
@@ -156,6 +158,16 @@
             this.linkLabel1.Text = "MusicBee Forum Post";
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
+            // syncLovedTracksCB
+            // 
+            this.syncLovedTracksCB.AutoSize = true;
+            this.syncLovedTracksCB.Location = new System.Drawing.Point(15, 147);
+            this.syncLovedTracksCB.Name = "syncLovedTracksCB";
+            this.syncLovedTracksCB.Size = new System.Drawing.Size(191, 17);
+            this.syncLovedTracksCB.TabIndex = 3;
+            this.syncLovedTracksCB.Text = "Sync \"loved track\" ♥ from Last.fm";
+            this.syncLovedTracksCB.UseVisualStyleBackColor = true;
+            // 
             // SettingsForm
             // 
             this.AcceptButton = this.buttonSave;
@@ -167,7 +179,7 @@
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonSave);
             this.Name = "SettingsForm";
-            this.Text = "Sync LastFm Playcount Settings";
+            this.Text = "Sync playcount from Last.fm - Settings";
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.ResumeLayout(false);
@@ -187,5 +199,6 @@
         private System.Windows.Forms.Button buttonOpenSettingsFolder;
         private System.Windows.Forms.Label labelVersionInfo;
         private System.Windows.Forms.LinkLabel linkLabel1;
+        private System.Windows.Forms.CheckBox syncLovedTracksCB;
     }
 }

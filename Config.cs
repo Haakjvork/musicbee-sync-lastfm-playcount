@@ -98,6 +98,7 @@ namespace MusicBeePlugin
         public bool QueryAlbumArtist { get; set; } = true;
         public bool QuerySortTitle { get; set; } = true;
         public bool QueryMultipleArtists { get; set; } = true;
+        public bool SyncLovedTracks { get; set; } = false;
 
     }
 

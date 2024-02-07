@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using IF.Lastfm.Core.Api;
+using IF.Lastfm.Core.Objects;
 using static MusicBeePlugin.Plugin;
 
 namespace MusicBeePlugin
@@ -59,14 +61,24 @@ namespace MusicBeePlugin
 
         private async Task<bool> SyncSongPlaycount(MBSong song)
         {
-            int playcount = await QuerySongPlaycount(song);
-            if (playcount > 1 && song.PlayCount != playcount)
+            Tuple<int, bool> res = await QuerySongPlaycount(song);
+            bool changes = false;
+            if (res.Item1 > 1 && song.PlayCount != res.Item1)
             {
-                mbApiInterface.Library_SetFileTag(song.File, (MetaDataType)FilePropertyType.PlayCount, playcount.ToString());
+                config.Log(String.Concat("Updating PlayCount from ", song.PlayCount, " to ", res.Item1));
+                mbApiInterface.Library_SetFileTag(song.File, (MetaDataType)FilePropertyType.PlayCount, res.Item1.ToString());
                 mbApiInterface.Library_CommitTagsToFile(song.File);
-                return true;
+                changes = true;
             }
-            return false;
+            if ( config.settings.SyncLovedTracks && res.Item1 > 1 && res.Item2 != song.IsLoved)
+            {
+                var value = (res.Item2 ? "L" : "");
+                config.Log(String.Concat("Updating RatingLove from ", song.IsLovedRaw, " to ", value ));
+                mbApiInterface.Library_SetFileTag(song.File, MetaDataType.RatingLove, value );
+                mbApiInterface.Library_CommitTagsToFile(song.File);
+                changes = true;
+            }
+            return changes;
         }
 
         private List<string> getSongTrackNames(MBSong song)
@@ -117,22 +129,31 @@ namespace MusicBeePlugin
             return artists;
         }
 
-        private async Task<int> QuerySongPlaycount(MBSong song)
+        private async Task<Tuple<int, bool>> QuerySongPlaycount(MBSong song)
         {
             if (String.IsNullOrEmpty(song.Name) || String.IsNullOrEmpty(song.Artist))
             {
-                return 0;
+                return null;
             }
             List<string> names = getSongTrackNames(song);
             List<string> artists = getSongTrackArtists(song);
             //Queries
             int old = song.PlayCount;
             var neu = 0;
+            bool isLoved = false;
             foreach (string name in names)
             {
                 foreach (string artist in artists)
                 {
-                    neu += await QueryTackInfo(name, artist);
+                    LastTrack info = await QueryTackInfo(name, artist);
+                    if ( info != null )
+                    {
+                        neu += (int) info.UserPlayCount;
+                        if ( (bool) info.IsLoved )
+                        {
+                            isLoved = true;
+                        }
+                    }
                 }
             }
             //Results
@@ -155,10 +176,11 @@ namespace MusicBeePlugin
                 warn = " IGNORE";
             }
             config.Log(String.Concat(old, " -> ", neu, " ", warn));
-            return neu;
+            Tuple<int, bool> res = new Tuple<int, bool>(neu, isLoved);
+            return res;
         }
 
-        private async Task<int> QueryTackInfo(string name, string artist)
+        private async Task<LastTrack> QueryTackInfo(string name, string artist)
         {
             config.Log(String.Concat("TrackInfo ", artist, " - ", name));
             var res = await lastfmClient.Track.GetInfoAsync(name, artist, config.settings.Username);
@@ -166,12 +188,12 @@ namespace MusicBeePlugin
             {
                 var pc = (int)res.Content.UserPlayCount;
                 config.Log(String.Concat("TrackInfo ", artist, " - ", name, " | OK = ", pc));
-                return pc;
+                return res.Content;
             }
             else
             {
                 config.Log(String.Concat("TrackInfo ", artist, " - ", name, " | ERROR: ", res.Status));
-                return 0;
+                return null;
             }
 
         }
