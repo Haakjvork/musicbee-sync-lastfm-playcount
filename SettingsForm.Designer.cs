@@ -30,13 +30,15 @@
         {
             this.buttonSave = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.buttonOpenSettingsFolder = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.queryMultipleArtistsCB = new System.Windows.Forms.CheckBox();
             this.querySortTitleCB = new System.Windows.Forms.CheckBox();
             this.queryAlbumArtistCB = new System.Windows.Forms.CheckBox();
             this.usernameTB = new System.Windows.Forms.TextBox();
             this.buttonCancel = new System.Windows.Forms.Button();
-            this.buttonOpenSettingsFolder = new System.Windows.Forms.Button();
+            this.labelVersionInfo = new System.Windows.Forms.Label();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -52,6 +54,8 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.linkLabel1);
+            this.panel1.Controls.Add(this.labelVersionInfo);
             this.panel1.Controls.Add(this.buttonOpenSettingsFolder);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.queryMultipleArtistsCB);
@@ -62,6 +66,16 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(535, 237);
             this.panel1.TabIndex = 1;
+            // 
+            // buttonOpenSettingsFolder
+            // 
+            this.buttonOpenSettingsFolder.Location = new System.Drawing.Point(15, 199);
+            this.buttonOpenSettingsFolder.Name = "buttonOpenSettingsFolder";
+            this.buttonOpenSettingsFolder.Size = new System.Drawing.Size(130, 23);
+            this.buttonOpenSettingsFolder.TabIndex = 5;
+            this.buttonOpenSettingsFolder.Text = "Open Settings Folder";
+            this.buttonOpenSettingsFolder.UseVisualStyleBackColor = true;
+            this.buttonOpenSettingsFolder.Click += new System.EventHandler(this.buttonOpenSettingsFolder_Click);
             // 
             // label1
             // 
@@ -120,15 +134,27 @@
             this.buttonCancel.UseVisualStyleBackColor = true;
             this.buttonCancel.Click += new System.EventHandler(this.buttonClose_Click);
             // 
-            // buttonOpenSettingsFolder
+            // labelVersionInfo
             // 
-            this.buttonOpenSettingsFolder.Location = new System.Drawing.Point(15, 199);
-            this.buttonOpenSettingsFolder.Name = "buttonOpenSettingsFolder";
-            this.buttonOpenSettingsFolder.Size = new System.Drawing.Size(130, 23);
-            this.buttonOpenSettingsFolder.TabIndex = 5;
-            this.buttonOpenSettingsFolder.Text = "Open Settings Folder";
-            this.buttonOpenSettingsFolder.UseVisualStyleBackColor = true;
-            this.buttonOpenSettingsFolder.Click += new System.EventHandler(this.buttonOpenSettingsFolder_Click);
+            this.labelVersionInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelVersionInfo.ForeColor = System.Drawing.SystemColors.ControlDark;
+            this.labelVersionInfo.Location = new System.Drawing.Point(450, 17);
+            this.labelVersionInfo.Name = "labelVersionInfo";
+            this.labelVersionInfo.Size = new System.Drawing.Size(82, 13);
+            this.labelVersionInfo.TabIndex = 6;
+            this.labelVersionInfo.Text = "labelVersionInfo";
+            this.labelVersionInfo.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // linkLabel1
+            // 
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.Location = new System.Drawing.Point(422, 36);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(110, 13);
+            this.linkLabel1.TabIndex = 7;
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.Text = "MusicBee Forum Post";
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // SettingsForm
             // 
@@ -142,7 +168,6 @@
             this.Controls.Add(this.buttonSave);
             this.Name = "SettingsForm";
             this.Text = "Sync LastFm Playcount Settings";
-            this.TopMost = true;
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.ResumeLayout(false);
@@ -160,5 +185,7 @@
         private System.Windows.Forms.CheckBox queryAlbumArtistCB;
         private System.Windows.Forms.TextBox usernameTB;
         private System.Windows.Forms.Button buttonOpenSettingsFolder;
+        private System.Windows.Forms.Label labelVersionInfo;
+        private System.Windows.Forms.LinkLabel linkLabel1;
     }
 }

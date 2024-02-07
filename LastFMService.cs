@@ -69,29 +69,10 @@ namespace MusicBeePlugin
             return false;
         }
 
-        private async Task<int> QuerySongPlaycount(MBSong song)
+        private List<string> getSongTrackNames(MBSong song)
         {
-            if (String.IsNullOrEmpty(song.Name) || String.IsNullOrEmpty(song.Artist))
-            {
-                return 0;
-            }
             List<string> names = new List<string>();
-            List<string> artists = new List<string>();
             names.Add(song.Name);
-            artists.Add(song.Artist);
-            if (config.settings.QueryMultipleArtists && song.Artist.Contains(";"))
-            {
-                string[] splitted = song.Artist.Split(';');
-                foreach (string s in splitted)
-                {
-                    var trimmed = s.Trim();
-                    if (!String.IsNullOrEmpty(trimmed))
-                    {
-                        artists.Add(trimmed);
-                    }
-
-                }
-            }
             var normalized = song.Name.Normalize();
             if (!String.Equals(song.Name, normalized))
             {
@@ -106,6 +87,25 @@ namespace MusicBeePlugin
                     names.Add(normalizedSortTitle);
                 }
             }
+            return names;
+        }
+        private List<string> getSongTrackArtists(MBSong song)
+        {
+            List<string> artists = new List<string>();
+            artists.Add(song.Artist);
+            if (config.settings.QueryMultipleArtists && song.Artist.Contains(";"))
+            {
+                string[] splitted = song.Artist.Split(';');
+                foreach (string s in splitted)
+                {
+                    var trimmed = s.Trim();
+                    if (!String.IsNullOrEmpty(trimmed))
+                    {
+                        artists.Add(trimmed);
+                    }
+
+                }
+            }
             if (config.settings.QueryAlbumArtist && !String.IsNullOrEmpty(song.AlbumArtist))
             {
                 bool alreadyContained = artists.Select((a) => a.ToLower()).Contains(song.AlbumArtist.ToLower());
@@ -114,6 +114,17 @@ namespace MusicBeePlugin
                     artists.Add(song.AlbumArtist);
                 }
             }
+            return artists;
+        }
+
+        private async Task<int> QuerySongPlaycount(MBSong song)
+        {
+            if (String.IsNullOrEmpty(song.Name) || String.IsNullOrEmpty(song.Artist))
+            {
+                return 0;
+            }
+            List<string> names = getSongTrackNames(song);
+            List<string> artists = getSongTrackArtists(song);
             //Queries
             int old = song.PlayCount;
             var neu = 0;
@@ -146,6 +157,7 @@ namespace MusicBeePlugin
             config.Log(String.Concat(old, " -> ", neu, " ", warn));
             return neu;
         }
+
         private async Task<int> QueryTackInfo(string name, string artist)
         {
             config.Log(String.Concat("TrackInfo ", artist, " - ", name));

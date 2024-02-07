@@ -8,22 +8,28 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static MusicBeePlugin.Plugin;
 
 namespace MusicBeePlugin
 {
     public partial class SettingsForm : Form
     {
 
-        private readonly Config config;
+        private static readonly string FORUM_URL = "https://getmusicbee.com/forum/index.php?topic=40383";
 
-        public SettingsForm(Config config)
+        private readonly Config config;
+        private readonly PluginInfo about;
+
+        public SettingsForm(PluginInfo about, Config config)
         {
+            this.about = about;
             this.config = config;
             InitializeComponent();
             usernameTB.Text = config.settings.Username;
             queryAlbumArtistCB.Checked = config.settings.QueryAlbumArtist;
             querySortTitleCB.Checked = config.settings.QuerySortTitle;
             queryMultipleArtistsCB.Checked = config.settings.QueryMultipleArtists;
+            this.labelVersionInfo.Text = "v" + about.VersionMajor + "." + about.VersionMinor + "." + about.Revision;
         }
 
         // called by MusicBee when the user clicks Apply or Save in the MusicBee Preferences screen.
@@ -62,6 +68,11 @@ namespace MusicBeePlugin
         private void buttonOpenSettingsFolder_Click(object sender, EventArgs e)
         {
             Process.Start(@""+config.getSubfolderPath());
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start(@""+ FORUM_URL);
         }
     }
 }

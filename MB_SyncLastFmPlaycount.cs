@@ -35,7 +35,7 @@ namespace MusicBeePlugin
             about.Type = PluginType.General;
             about.VersionMajor = 1;  // your plugin version
             about.VersionMinor = 0;
-            about.Revision = 7;
+            about.Revision = 8;
             about.MinInterfaceVersion = MinInterfaceVersion;
             about.MinApiRevision = MinApiRevision;
             about.ReceiveNotifications = (ReceiveNotificationFlags.StartupOnly);
@@ -58,9 +58,9 @@ namespace MusicBeePlugin
             //Click on default MusicBee plugin button
             if (this.settingsForm == null || !this.settingsForm.Visible )
             {
-                this.settingsForm = new SettingsForm(config);
+                this.settingsForm = new SettingsForm(about,config);
             }
-            settingsForm.Show();
+            settingsForm.ShowDialog();
             //True to avoid About box
             return true;
         }
