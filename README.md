@@ -3,6 +3,20 @@ Synchronizes MusicBee playcount with LastFm data.
 It uses the API endpoint **track.getInfo** to get the user playcount.
 It automatically normalizes song titles and splits multiple artists, so it may make several queries per song.
 
+# Installation
+
+Download the .zip file from https://github.com/Haakjvork/musicbee-sync-lastfm-playcount/releases/latest and use MusicBee's "Add Plugin" option
+
+# Update
+
+If you want the update the plugin, you can download the main .dll file from https://github.com/Haakjvork/musicbee-sync-lastfm-playcount/releases/latest or extract it from the zip file, and then replace it in 
+
+C:\Users\<user>\AppData\Roaming\MusicBee\Plugins
+
+**The main file is: MB_SyncLastFmPlaycount.dll**
+
+Dependencies: Newtonsoft.Json.dll and IF.Lastfm.Core.dll
+
 
 # Options
 
@@ -13,6 +27,8 @@ It automatically normalizes song titles and splits multiple artists, so it may m
 **Query Sort Title too.** When checked, the SortTitle will be queried too if it's different from SongTitle.
 
 **Query multiple artists**. When checked, if multiple values of 'Artist' are present, each of them will be queried.
+
+**Sync 'loved track' ♥ from Last.fm**
 
 
 ## Example about normalization
