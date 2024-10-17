@@ -3,9 +3,11 @@ Synchronizes MusicBee playcount with LastFm data.
 It uses the API endpoint **track.getInfo** to get the user playcount.
 It automatically normalizes song titles and splits multiple artists, so it may make several queries per song.
 
+
 # Installation
 
 Download the .zip file from https://github.com/Haakjvork/musicbee-sync-lastfm-playcount/releases/latest and use MusicBee's "Add Plugin" option
+
 
 # Update
 
@@ -16,6 +18,15 @@ C:\Users\<user>\AppData\Roaming\MusicBee\Plugins
 **The main file is: MB_SyncLastFmPlaycount.dll**
 
 Dependencies: Newtonsoft.Json.dll and IF.Lastfm.Core.dll
+
+
+# Contextual menu
+
+The plugin should appear when right-clicking as **Sync from LastFm** with several options:
+
+**Update playcount of selected files**: Query LastFm to update the currently selected files.
+
+**Update playcount of recent scrobbles**: Try to find which tracks have been scrobbled on LastFm recently and exists in MusicBee, and then update them.
 
 
 # Options
@@ -29,6 +40,8 @@ Dependencies: Newtonsoft.Json.dll and IF.Lastfm.Core.dll
 **Query multiple artists**. When checked, if multiple values of 'Artist' are present, each of them will be queried.
 
 **Sync 'loved track' ♥ from Last.fm**
+
+**Update when**. You can choose to update the playcount when it different or just when LastFm value is higher.
 
 
 ## Example about normalization
@@ -65,7 +78,7 @@ Also, if you have enabled "Query Sort Title too when different from Track Name",
 
 The sum of these 12 queries will be the new playcount.
 
-**If the playcount is equal or less than 1 (usually because the track does not exist in Last.Fm) it WON'T change the playcount** so no changes would be make.
+**If the playcount is 0 (usually because the track does not exist in Last.Fm) it WON'T change the playcount** so no changes would be make.
 
 
 # LastFM API
