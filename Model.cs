@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using static MusicBeePlugin.Plugin;
 
 namespace MusicBeePlugin
@@ -28,6 +29,20 @@ namespace MusicBeePlugin
             PlayCount = Int32.Parse(pc);
             IsLovedRaw = mbApiInterface.Library_GetFileTag(sourceFileUrl, MetaDataType.RatingLove);
             IsLoved = (IsLovedRaw != null && (IsLovedRaw.ToLower().Equals("true") || IsLovedRaw == "1" || IsLovedRaw == "L"));
+        }
+    }
+
+    public class QueriedLastTracks
+    {
+        public List<string> Files{ get; private set; } 
+        public DateTimeOffset? MinTimePlayed { get; set; }
+        public DateTimeOffset? MaxTimePlayed { get; set; }
+        public int ValidScrobbles { get; set; }
+
+        public QueriedLastTracks()
+        {
+            Files = new List<string>();
+            ValidScrobbles = 0;
         }
     }
 }

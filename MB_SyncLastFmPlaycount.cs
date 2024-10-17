@@ -34,8 +34,8 @@ namespace MusicBeePlugin
             about.TargetApplication = "";   //  the name of a Plugin Storage device or panel header for a dockable panel
             about.Type = PluginType.General;
             about.VersionMajor = 1;  // your plugin version
-            about.VersionMinor = 0;
-            about.Revision = 9;
+            about.VersionMinor = 2;
+            about.Revision = 0;
             about.MinInterfaceVersion = MinInterfaceVersion;
             about.MinApiRevision = MinApiRevision;
             about.ReceiveNotifications = (ReceiveNotificationFlags.StartupOnly);
@@ -58,7 +58,7 @@ namespace MusicBeePlugin
             //Click on default MusicBee plugin button
             if (this.settingsForm == null || !this.settingsForm.Visible )
             {
-                this.settingsForm = new SettingsForm(about,config);
+                this.settingsForm = new SettingsForm(about,config,lastFmClient);
             }
             settingsForm.ShowDialog();
             //True to avoid About box
@@ -84,27 +84,41 @@ namespace MusicBeePlugin
             {
                 case NotificationType.PluginStartup:
                     config.Log("-- Startup --");
-                    mbApiInterface.MB_AddMenuItem($"context.Main/Sync Playcount from LastFm", "Sync Playcount from LastFm", SyncPlaycountFromLastFm);
+                    ToolStripMenuItem menu = (ToolStripMenuItem) mbApiInterface.MB_AddMenuItem($"context.Main/Sync From LastFm", null, null);
+                    menu.DropDown.Items.Add($"Update playcount of selected files",null,SyncPlaycountFromSelectedFiles);
+                    menu.DropDown.Items.Add($"Update playcount of recent scrobbles",null,SyncPlaycountFromRecentScrobbles);
                     break;
             }
         }
 
-        public async void SyncPlaycountFromLastFm(object sender, EventArgs args)
+        public async void SyncPlaycountFromSelectedFiles(object sender, EventArgs args)
         {
             if ( String.IsNullOrEmpty(config.settings.Username) )
             {
                 mbApiInterface.MB_SetBackgroundTaskMessage(String.Concat("Can't sync with LastFm: Empty username"));
                 return;
             }
-            
-            mbApiInterface.Library_QueryFilesEx("domain=SelectedFiles", out string[] files);
-            if (files == null) return;
-
             if (lastFMService == null)
             {
                 lastFMService = new LastFMService(config,lastFmClient);
             }
-            await lastFMService.SyncPlaycountFromLastFm(files);
+            mbApiInterface.Library_QueryFilesEx("domain=SelectedFiles", out string[] files);
+            await lastFMService.SyncFilesPlaycount(files);
+
+        }
+
+        public async void SyncPlaycountFromRecentScrobbles(object sender, EventArgs args)
+        {
+            if (String.IsNullOrEmpty(config.settings.Username))
+            {
+                mbApiInterface.MB_SetBackgroundTaskMessage(String.Concat("Can't sync with LastFm: Empty username"));
+                return;
+            }
+            if (lastFMService == null)
+            {
+                lastFMService = new LastFMService(config, lastFmClient);
+            }
+            await lastFMService.SyncByRecentScrobbles(false);
 
         }
 

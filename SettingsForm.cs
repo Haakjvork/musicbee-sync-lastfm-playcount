@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using IF.Lastfm.Core.Api;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 using static MusicBeePlugin.Plugin;
 
 namespace MusicBeePlugin
@@ -19,17 +21,21 @@ namespace MusicBeePlugin
 
         private readonly Config config;
         private readonly PluginInfo about;
+        private readonly LastfmClient lastfmClient;
 
-        public SettingsForm(PluginInfo about, Config config)
+        public SettingsForm(PluginInfo about, Config config, LastfmClient lastfmClient)
         {
             this.about = about;
             this.config = config;
+            this.lastfmClient = lastfmClient;
             InitializeComponent();
-            usernameTB.Text = config.settings.Username;
-            queryAlbumArtistCB.Checked = config.settings.QueryAlbumArtist;
-            querySortTitleCB.Checked = config.settings.QuerySortTitle;
-            queryMultipleArtistsCB.Checked = config.settings.QueryMultipleArtists;
-            syncLovedTracksCB.Checked  = config.settings.SyncLovedTracks;
+            tbUsername.Text = config.settings.Username;
+            cbQueryAlbumArtist.Checked = config.settings.QueryAlbumArtist;
+            cbQuerySortTitle.Checked = config.settings.QuerySortTitle;
+            cbQueryMultipleArtists.Checked = config.settings.QueryMultipleArtists;
+            cbSyncLovedTracks.Checked = config.settings.SyncLovedTracks;
+            nudIgnoreWhenLower.Value = config.settings.IgnoreWhenLower; 
+            cbUpdateMode.SelectedIndex = Math.Min( config.settings.UpdateMode, cbUpdateMode.Items.Count-1 );
             this.labelVersionInfo.Text = "v" + about.VersionMajor + "." + about.VersionMinor + "." + about.Revision;
         }
 
@@ -40,13 +46,15 @@ namespace MusicBeePlugin
             try
             {
                 config.Log("SaveSettings");
-                config.settings.Username = usernameTB.Text;
-                config.settings.QueryAlbumArtist = queryAlbumArtistCB.Checked;
-                config.settings.QuerySortTitle = querySortTitleCB.Checked;
-                config.settings.QueryMultipleArtists = queryMultipleArtistsCB.Checked;
-                config.settings.SyncLovedTracks = syncLovedTracksCB.Checked;
+                config.settings.Username = tbUsername.Text;
+                config.settings.QueryAlbumArtist = cbQueryAlbumArtist.Checked;
+                config.settings.QuerySortTitle = cbQuerySortTitle.Checked;
+                config.settings.QueryMultipleArtists = cbQueryMultipleArtists.Checked;
+                config.settings.SyncLovedTracks = cbSyncLovedTracks.Checked;
+                config.settings.IgnoreWhenLower = (int)nudIgnoreWhenLower.Value;
+                config.settings.UpdateMode = cbUpdateMode.SelectedIndex;
 
-                config.Save();
+                config.SaveSettings();
             }
             catch (Exception e)
             {
@@ -69,12 +77,20 @@ namespace MusicBeePlugin
 
         private void buttonOpenSettingsFolder_Click(object sender, EventArgs e)
         {
-            Process.Start(@""+config.getSubfolderPath());
+            Process.Start(@"" + config.getSubfolderPath());
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start(@""+ FORUM_URL);
+            Process.Start(@"" + FORUM_URL);
         }
+
+        private async void button1_Click(object sender, EventArgs e)
+        {
+            LastFMService service = new LastFMService(config, lastfmClient);
+            await service.SyncByRecentScrobbles(true);
+        }
+
     }
+
 }

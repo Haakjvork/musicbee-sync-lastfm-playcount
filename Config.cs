@@ -9,19 +9,23 @@ namespace MusicBeePlugin
 {
     public class Config
     {
-        public static string SUBFOLDER = "SyncLastFmPlaycount\\"; // Plugin subfolder.
+        public static string SUBFOLDER = "SyncLastFmPlaycount"; // Plugin subfolder.
 
         public Settings settings { get; private set; }
+        public UserData userData { get; private set; }  
 
         public Config()
         {
             settings = LoadSettings();
+            userData = LoadUserData();
         }
 
         public string getSubfolderPath()
         {
             string dataPath = mbApiInterface.Setting_GetPersistentStoragePath();
-            return String.Concat(dataPath, SUBFOLDER);
+            string path = String.Concat(dataPath, SUBFOLDER, Path.DirectorySeparatorChar );
+            Directory.CreateDirectory(path);
+            return path;
         }
 
         public void Log(string text)
@@ -30,22 +34,23 @@ namespace MusicBeePlugin
             string errorTimestamp = DateTime.Now.ToString();
             // Create the folder where the error log will be stored.
             string path = getSubfolderPath();
-            Directory.CreateDirectory(path);
             File.AppendAllText(String.Concat(path, "log.log"), errorTimestamp + " "
                                                                                         + text + Environment.NewLine);
         }
 
-        public void Save()
+        public void SaveSettings()
         {
             var json = JsonConvert.SerializeObject(settings);
             string path = getSubfolderPath();
-            Directory.CreateDirectory(path);
             File.WriteAllText(String.Concat(path, "settings.json"), json);
+            //Update userData if user changed
+            userData = LoadUserData();
+            userData.Username = settings.Username;
+            SaveUserData();
         }
         private Settings LoadSettings()
         {
             string path = getSubfolderPath();
-            Directory.CreateDirectory(path);
             string file = String.Concat(path, "settings.json");
             if (File.Exists(file))
             {
@@ -60,6 +65,47 @@ namespace MusicBeePlugin
             {
                 return new Settings();
             }
+        }
+        private string GetUserFolder()
+        {
+            if ( String.IsNullOrEmpty(settings.Username))
+            {
+                return null;
+            }
+            string path = getSubfolderPath();
+            string folderName = settings.Username;
+            foreach (char c in Path.GetInvalidPathChars())
+                folderName = folderName.Replace(Char.ToString(c), "");
+            string folder = String.Concat(path, folderName, Path.DirectorySeparatorChar );
+            Directory.CreateDirectory(folder);
+            return folder;
+        }
+        public void SaveUserData()
+        {
+            string userFolder = GetUserFolder();
+            if ( userFolder != null)
+            {
+                var json = JsonConvert.SerializeObject(userData);
+                File.WriteAllText(String.Concat(userFolder, "data.json"), json);
+            }
+            
+        }
+        private UserData LoadUserData()
+        {
+            string userFolder = GetUserFolder();
+            if (userFolder != null)
+            {
+                string file = String.Concat(userFolder, "data.json");
+                if (File.Exists(file))
+                {
+                    string json = File.ReadAllText(file);
+                    if (!String.IsNullOrEmpty(json))
+                    {
+                        return JsonConvert.DeserializeObject<UserData>(json);
+                    }
+                }
+            }
+            return new UserData();
         }
         public void ControlLogFile()
         {
@@ -99,6 +145,14 @@ namespace MusicBeePlugin
         public bool QuerySortTitle { get; set; } = true;
         public bool QueryMultipleArtists { get; set; } = true;
         public bool SyncLovedTracks { get; set; } = false;
+        public int IgnoreWhenLower { get; set; } = 2;
+        public int UpdateMode { get; set; } = 0;
+
+    }
+    public class UserData
+    {
+        public string Username { get; set; }
+        public DateTimeOffset? LastTimePlayed { get; set; }
 
     }
 
