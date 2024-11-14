@@ -1,4 +1,5 @@
 # musicbee-sync-lastfm-playcount
+
 Synchronizes MusicBee playcount with LastFm data.
 It uses the API endpoint **track.getInfo** to get the user playcount.
 It automatically normalizes song titles and splits multiple artists, so it may make several queries per song.
@@ -13,7 +14,7 @@ Download the .zip file from https://github.com/Haakjvork/musicbee-sync-lastfm-pl
 
 If you want the update the plugin, you can download the main .dll file from https://github.com/Haakjvork/musicbee-sync-lastfm-playcount/releases/latest or extract it from the zip file, and then replace it in 
 
-C:\Users\<user>\AppData\Roaming\MusicBee\Plugins
+C:\Users\\\<user>\AppData\Roaming\MusicBee\Plugins
 
 **The main file is: MB_SyncLastFmPlaycount.dll**
 
@@ -44,6 +45,11 @@ The plugin should appear when right-clicking as **Sync from LastFm** with severa
 **Query recent tracks on startup**. When MusicBee starts, queries all recent tracks.
 
 **Update when**. You can choose to update the playcount when its different or just when LastFm value is higher.
+
+
+# Difference with the default MusicBee LastFm plugin
+
+MusicBee's default plugin queries all your track history and then recounts your scrobbles with the same artist, title and album. **The main goal of this plugin is to ignore the album name and just sum playcounts by "artist" and "track title"**. It also checks other fields ("album artist" and "sort title") while applying string normalization (see next point).
 
 
 ## Example about normalization
