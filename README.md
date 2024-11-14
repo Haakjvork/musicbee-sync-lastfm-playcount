@@ -41,7 +41,9 @@ The plugin should appear when right-clicking as **Sync from LastFm** with severa
 
 **Sync 'loved track' ♥ from Last.fm**
 
-**Update when**. You can choose to update the playcount when it different or just when LastFm value is higher.
+**Query recent tracks on startup**. When MusicBee starts, queries all recent tracks.
+
+**Update when**. You can choose to update the playcount when its different or just when LastFm value is higher.
 
 
 ## Example about normalization
