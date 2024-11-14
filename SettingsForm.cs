@@ -34,6 +34,7 @@ namespace MusicBeePlugin
             cbQuerySortTitle.Checked = config.settings.QuerySortTitle;
             cbQueryMultipleArtists.Checked = config.settings.QueryMultipleArtists;
             cbSyncLovedTracks.Checked = config.settings.SyncLovedTracks;
+            cbQueryRecentOnStartup.Checked = config.settings.QueryRecentOnStartup;
             nudIgnoreWhenLower.Value = config.settings.IgnoreWhenLower; 
             cbUpdateMode.SelectedIndex = Math.Min( config.settings.UpdateMode, cbUpdateMode.Items.Count-1 );
             this.labelVersionInfo.Text = "v" + about.VersionMajor + "." + about.VersionMinor + "." + about.Revision;
@@ -51,6 +52,7 @@ namespace MusicBeePlugin
                 config.settings.QuerySortTitle = cbQuerySortTitle.Checked;
                 config.settings.QueryMultipleArtists = cbQueryMultipleArtists.Checked;
                 config.settings.SyncLovedTracks = cbSyncLovedTracks.Checked;
+                config.settings.QueryRecentOnStartup = cbQueryRecentOnStartup.Checked;
                 config.settings.IgnoreWhenLower = (int)nudIgnoreWhenLower.Value;
                 config.settings.UpdateMode = cbUpdateMode.SelectedIndex;
 

@@ -145,6 +145,7 @@ namespace MusicBeePlugin
         public bool QuerySortTitle { get; set; } = true;
         public bool QueryMultipleArtists { get; set; } = true;
         public bool SyncLovedTracks { get; set; } = false;
+        public bool QueryRecentOnStartup { get; set; } = true;
         public int IgnoreWhenLower { get; set; } = 2;
         public int UpdateMode { get; set; } = 0;
 

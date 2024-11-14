@@ -35,7 +35,7 @@ namespace MusicBeePlugin
             about.Type = PluginType.General;
             about.VersionMajor = 1;  // your plugin version
             about.VersionMinor = 2;
-            about.Revision = 0;
+            about.Revision = 1;
             about.MinInterfaceVersion = MinInterfaceVersion;
             about.MinApiRevision = MinApiRevision;
             about.ReceiveNotifications = (ReceiveNotificationFlags.StartupOnly);
@@ -87,6 +87,10 @@ namespace MusicBeePlugin
                     ToolStripMenuItem menu = (ToolStripMenuItem) mbApiInterface.MB_AddMenuItem($"context.Main/Sync From LastFm", null, null);
                     menu.DropDown.Items.Add($"Update playcount of selected files",null,SyncPlaycountFromSelectedFiles);
                     menu.DropDown.Items.Add($"Update playcount of recent scrobbles",null,SyncPlaycountFromRecentScrobbles);
+                    if ( config.settings.QueryRecentOnStartup)
+                    {
+                        Task.Run(() => { this.SyncPlaycountFromRecentScrobbles(null, null); });
+                    }
                     break;
             }
         }
