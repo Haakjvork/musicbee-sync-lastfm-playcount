@@ -18,7 +18,7 @@ C:\Users\\\<user>\AppData\Roaming\MusicBee\Plugins
 
 **The main file is: MB_SyncLastFmPlaycount.dll**
 
-Dependencies: Newtonsoft.Json.dll and IF.Lastfm.Core.dll
+Dependencies can be located in the MB_SyncLastFmPlaycount subfolder: Newtonsoft.Json.dll and IF.Lastfm.Core.dll
 
 
 # Contextual menu
