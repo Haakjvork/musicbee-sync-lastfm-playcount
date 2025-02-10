@@ -1,21 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using IF.Lastfm.Core.Api;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 using static MusicBeePlugin.Plugin;
 
-namespace MusicBeePlugin
-{
-    public partial class SettingsForm : Form
-    {
+namespace MusicBeePlugin {
+    public partial class SettingsForm : Form {
 
         private static readonly string FORUM_URL = "https://getmusicbee.com/forum/index.php?topic=40383";
 
@@ -23,8 +13,7 @@ namespace MusicBeePlugin
         private readonly PluginInfo about;
         private readonly LastfmClient lastfmClient;
 
-        public SettingsForm(PluginInfo about, Config config, LastfmClient lastfmClient)
-        {
+        public SettingsForm(PluginInfo about, Config config, LastfmClient lastfmClient) {
             this.about = about;
             this.config = config;
             this.lastfmClient = lastfmClient;
@@ -35,17 +24,15 @@ namespace MusicBeePlugin
             cbQueryMultipleArtists.Checked = config.settings.QueryMultipleArtists;
             cbSyncLovedTracks.Checked = config.settings.SyncLovedTracks;
             cbQueryRecentOnStartup.Checked = config.settings.QueryRecentOnStartup;
-            nudIgnoreWhenLower.Value = config.settings.IgnoreWhenLower; 
-            cbUpdateMode.SelectedIndex = Math.Min( config.settings.UpdateMode, cbUpdateMode.Items.Count-1 );
+            nudIgnoreWhenLower.Value = config.settings.IgnoreWhenLower;
+            cbUpdateMode.SelectedIndex = Math.Min(config.settings.UpdateMode, cbUpdateMode.Items.Count - 1);
             this.labelVersionInfo.Text = "v" + about.VersionMajor + "." + about.VersionMinor + "." + about.Revision;
         }
 
         // called by MusicBee when the user clicks Apply or Save in the MusicBee Preferences screen.
         // its up to you to figure out whether anything has changed and needs updating
-        public void SaveSettings()
-        {
-            try
-            {
+        public void SaveSettings() {
+            try {
                 config.Log("SaveSettings");
                 config.settings.Username = tbUsername.Text;
                 config.settings.QueryAlbumArtist = cbQueryAlbumArtist.Checked;
@@ -57,38 +44,31 @@ namespace MusicBeePlugin
                 config.settings.UpdateMode = cbUpdateMode.SelectedIndex;
 
                 config.SaveSettings();
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 var error = String.Concat("ERROR: ", e.Message);
                 config.Log(error);
                 config.Log(e.StackTrace);
             }
         }
 
-        private void buttonSave_Click(object sender, EventArgs e)
-        {
+        private void buttonSave_Click(object sender, EventArgs e) {
             this.SaveSettings();
             this.Close();
         }
 
-        private void buttonClose_Click(object sender, EventArgs e)
-        {
+        private void buttonClose_Click(object sender, EventArgs e) {
             this.Close();
         }
 
-        private void buttonOpenSettingsFolder_Click(object sender, EventArgs e)
-        {
+        private void buttonOpenSettingsFolder_Click(object sender, EventArgs e) {
             Process.Start(@"" + config.getSubfolderPath());
         }
 
-        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
             Process.Start(@"" + FORUM_URL);
         }
 
-        private async void button1_Click(object sender, EventArgs e)
-        {
+        private async void button1_Click(object sender, EventArgs e) {
             LastFMService service = new LastFMService(config, lastfmClient);
             await service.SyncByRecentScrobbles(true);
         }

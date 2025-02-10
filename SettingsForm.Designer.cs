@@ -1,7 +1,5 @@
-﻿namespace MusicBeePlugin
-{
-    partial class SettingsForm
-    {
+﻿namespace MusicBeePlugin {
+    partial class SettingsForm {
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -11,10 +9,8 @@
         /// Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
+        protected override void Dispose(bool disposing) {
+            if (disposing && (components != null)) {
                 components.Dispose();
             }
             base.Dispose(disposing);
@@ -26,10 +22,10 @@
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
-        {
+        private void InitializeComponent() {
             this.buttonSave = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.cbQueryRecentOnStartup = new System.Windows.Forms.CheckBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.cbUpdateMode = new System.Windows.Forms.ComboBox();
@@ -46,7 +42,6 @@
             this.cbQueryAlbumArtist = new System.Windows.Forms.CheckBox();
             this.tbUsername = new System.Windows.Forms.TextBox();
             this.buttonCancel = new System.Windows.Forms.Button();
-            this.cbQueryRecentOnStartup = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudIgnoreWhenLower)).BeginInit();
             this.SuspendLayout();
@@ -84,10 +79,20 @@
             this.panel1.Size = new System.Drawing.Size(535, 333);
             this.panel1.TabIndex = 1;
             // 
+            // cbQueryRecentOnStartup
+            // 
+            this.cbQueryRecentOnStartup.AutoSize = true;
+            this.cbQueryRecentOnStartup.Location = new System.Drawing.Point(15, 170);
+            this.cbQueryRecentOnStartup.Name = "cbQueryRecentOnStartup";
+            this.cbQueryRecentOnStartup.Size = new System.Drawing.Size(169, 17);
+            this.cbQueryRecentOnStartup.TabIndex = 16;
+            this.cbQueryRecentOnStartup.Text = "Query recent tracks on startup";
+            this.cbQueryRecentOnStartup.UseVisualStyleBackColor = true;
+            // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 203);
+            this.label4.Location = new System.Drawing.Point(12, 222);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(297, 13);
             this.label4.TabIndex = 15;
@@ -96,7 +101,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(25, 224);
+            this.label3.Location = new System.Drawing.Point(25, 243);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(71, 13);
             this.label3.TabIndex = 14;
@@ -109,14 +114,14 @@
             this.cbUpdateMode.Items.AddRange(new object[] {
             "playcounts differ",
             "LastFm playcount is higher that MusicBee\'s"});
-            this.cbUpdateMode.Location = new System.Drawing.Point(102, 219);
+            this.cbUpdateMode.Location = new System.Drawing.Point(102, 238);
             this.cbUpdateMode.Name = "cbUpdateMode";
             this.cbUpdateMode.Size = new System.Drawing.Size(278, 21);
             this.cbUpdateMode.TabIndex = 13;
             // 
             // nudIgnoreWhenLower
             // 
-            this.nudIgnoreWhenLower.Location = new System.Drawing.Point(226, 243);
+            this.nudIgnoreWhenLower.Location = new System.Drawing.Point(226, 262);
             this.nudIgnoreWhenLower.Maximum = new decimal(new int[] {
             10,
             0,
@@ -139,7 +144,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(25, 245);
+            this.label2.Location = new System.Drawing.Point(25, 264);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(195, 13);
             this.label2.TabIndex = 10;
@@ -254,16 +259,6 @@
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
             this.buttonCancel.Click += new System.EventHandler(this.buttonClose_Click);
-            // 
-            // cbQueryRecentOnStartup
-            // 
-            this.cbQueryRecentOnStartup.AutoSize = true;
-            this.cbQueryRecentOnStartup.Location = new System.Drawing.Point(15, 170);
-            this.cbQueryRecentOnStartup.Name = "cbQueryRecentOnStartup";
-            this.cbQueryRecentOnStartup.Size = new System.Drawing.Size(169, 17);
-            this.cbQueryRecentOnStartup.TabIndex = 16;
-            this.cbQueryRecentOnStartup.Text = "Query recent tracks on startup";
-            this.cbQueryRecentOnStartup.UseVisualStyleBackColor = true;
             // 
             // SettingsForm
             // 

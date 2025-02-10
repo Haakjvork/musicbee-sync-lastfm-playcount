@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using static MusicBeePlugin.Plugin;
 
-namespace MusicBeePlugin
-{
+namespace MusicBeePlugin {
 
-    public class MBSong
-    {
+    public class MBSong {
         public string File { get; private set; }
         public string Name { get; private set; }
         public string SortTitle { get; private set; }
@@ -17,8 +15,7 @@ namespace MusicBeePlugin
         public bool IsLoved { get; private set; }
         public string IsLovedRaw { get; private set; }
 
-        public MBSong(string sourceFileUrl)
-        {
+        public MBSong(string sourceFileUrl) {
             File = sourceFileUrl;
             Name = mbApiInterface.Library_GetFileTag(sourceFileUrl, MetaDataType.TrackTitle);
             SortTitle = mbApiInterface.Library_GetFileTag(sourceFileUrl, MetaDataType.SortTitle);
@@ -32,15 +29,13 @@ namespace MusicBeePlugin
         }
     }
 
-    public class QueriedLastTracks
-    {
-        public List<string> Files{ get; private set; } 
+    public class QueriedLastTracks {
+        public List<string> Files { get; private set; }
         public DateTimeOffset? MinTimePlayed { get; set; }
         public DateTimeOffset? MaxTimePlayed { get; set; }
         public int ValidScrobbles { get; set; }
 
-        public QueriedLastTracks()
-        {
+        public QueriedLastTracks() {
             Files = new List<string>();
             ValidScrobbles = 0;
         }
